@@ -16,6 +16,6 @@ CODESYSPLC.StartAcquisition();
 
 while(true)
 {
-    Console.WriteLine(CODESYSPLC.TEST.CV);
-    Thread.Sleep(2000);
+//    Console.WriteLine(CODESYSPLC.AnalogSensor.CV);
+//    Thread.Sleep(2000);
 }

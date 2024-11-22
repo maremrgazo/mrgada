@@ -7,6 +7,7 @@ using static Mrgada;
 using System.Diagnostics;
 using Opc.UaFx.Client;
 using Opc.Ua;
+using static Mrgada.Acquisitor;
 
 
 public static partial class Mrgada
@@ -17,20 +18,20 @@ public static partial class Mrgada
         public Opc.UaFx.Client.OpcClient _OpcUaClient;
         private Func<Opc.UaFx.Client.OpcClient> _OpcUaClientGetter;
         private Thread _OpcUaClientAcquisitorThread;
-        public List<OpcUaTag> _OpcUaTags = [];
+        public List<Object> _OpcUaTags = [];
 
         public virtual void InitializeOpcUaNodes()
         {
             // Specific tags are added in "./Procedurally Generated/{Acquisitor name}"
         }
 
-        public class OpcUaTag
+        public class OpcUaTag<T>
         {
             private string _NodeId;
-            private float _cv;
+            private T _cv;
             private Func<Opc.UaFx.Client.OpcClient> _OpcUaClientGetter;
 
-            public float CV
+            public T CV
             {
                 get => _cv;
                 set
@@ -38,21 +39,17 @@ public static partial class Mrgada
                     WriteNode(_cv);
                 }
             }
-
             public OpcUaTag(string NodeId, Func<Opc.UaFx.Client.OpcClient> OpcUaClientGetter)
             {
                 _NodeId = NodeId;
                 _OpcUaClientGetter = OpcUaClientGetter;
             }
-
             public void ReadNode()
             {
                 var _OpcUaClient = _OpcUaClientGetter();
-                var value = _OpcUaClient.ReadNode(_NodeId).Value;
-                _cv = Convert.ToSingle(value);
+                _cv = (T)_OpcUaClient.ReadNode(_NodeId).Value;
             }
-
-            private void WriteNode(float value)
+            private void WriteNode(T value)
             {
                 var _OpcUaClient = _OpcUaClientGetter();
                 _OpcUaClient.WriteNode(_NodeId, value);
@@ -82,10 +79,12 @@ public static partial class Mrgada
 
                         // Read bytes from PLC
                         Stopwatch.Start();
-                        foreach (OpcUaTag Tag in _OpcUaTags)
-                        {
-                            Tag.ReadNode();
-                        }
+                        var floatNodes = _OpcUaTags.OfType<OpcUaTag<float>>();
+                        var intSingle = _OpcUaTags.OfType<OpcUaTag<System.Int16>>();
+
+                        foreach (var NodeFloat in floatNodes) { NodeFloat.ReadNode(); }
+                        foreach (var NodeSingle in intSingle) { NodeSingle.ReadNode(); }
+
                         Stopwatch.Stop();
                         if (ConsoleWrite) Console.WriteLine($"{_AcquisitorName} Reading tags from OPCUA Server took: {Stopwatch.ElapsedMilliseconds} ms");
                     }

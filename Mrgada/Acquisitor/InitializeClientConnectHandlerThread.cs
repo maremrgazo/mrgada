@@ -34,7 +34,7 @@ public static partial class Mrgada
                         {
                             _Clients.Add(client);
                         }
-                        Console.WriteLine($"Client Connected to Acquisitor {_AcquisitorName}!");
+                        Console.WriteLine($"Client {client.ToString()} Connected to Acquisitor {_AcquisitorName}!");
                         OnClientConnect(client);
                     }
 

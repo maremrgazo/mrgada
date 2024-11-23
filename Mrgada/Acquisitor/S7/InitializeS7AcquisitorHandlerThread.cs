@@ -11,11 +11,46 @@ public static partial class Mrgada
 {
     public partial class Acquisitor
     {
+        private object S7TransportQueueLock = new object();
+
+
+
         public class S7db
         {
-            public int Num;
-            public int Len;
-            public byte[] bytes;
+            public readonly int Num;
+            public readonly int Len;
+            private byte[] Bytes;
+            private byte[] BytesOld;
+            private S7.Net.Plc _S7Plc;
+
+            public S7db(int Num, int Len, S7.Net.Plc _S7Plc)
+            {
+                this.Num = Num;
+                this.Len = Len;
+                this._S7Plc = _S7Plc;
+
+                Bytes = new byte[Len];
+                BytesOld = new byte[Len];
+            }
+
+            public void Read()
+            {
+                BytesOld = Bytes;
+                Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, Num, 0, Len); 
+
+                if (BytesOld != Bytes)
+                {
+                    AddBytesToTransportQueue();
+                }
+            }
+
+            private void AddBytesToTransportQueue()
+            {
+                //lock(S7TransportQueueLock)
+                //{
+                //    // Add to Transport Queue
+                //}
+            }
 
             public virtual void ParseCVs()
             {
@@ -26,14 +61,19 @@ public static partial class Mrgada
         {
             // Add specific dbs like dbDigitalValves, etc...
 
-            // For testing purposes
-            for (int i = 0; i < 100; i++) 
-                _S7dbs.Add(new S7db() { Num = 52, Len = 200 });
+            //// For testing purposes
+            //for (int i = 0; i < 100; i++) 
+            //    _S7dbs.Add(new S7db() { Num = 52, Len = 200 });
+        }
+
+        public virtual void ReadS7dbs()
+        {
+            // Add specific dbs like dbDigitalValves, etc...
         }
 
 
         // S7 Acquisitor
-        private S7.Net.Plc _S7Plc;
+        public S7.Net.Plc _S7Plc;
         private Thread _S7AcquisitorThread;
         private List<S7db> _S7dbs = [];
         private void InitializeS7AcquisitorHandlerThread()
@@ -60,10 +100,11 @@ public static partial class Mrgada
 
                         // Read bytes from PLC
                         Stopwatch.Start();
-                        foreach (S7db db in _S7dbs)
-                        {
-                            db.bytes = await _S7Plc.ReadBytesAsync(S7.Net.DataType.DataBlock, db.Num, 0, db.Len); // TODO Implement Async
-                        }
+                        //foreach (S7db db in _S7dbs)
+                        //{
+                        //    db.bytes = await _S7Plc.ReadBytesAsync(S7.Net.DataType.DataBlock, db.Num, 0, db.Len); // TODO Implement Async
+                        //}
+                        ReadS7dbs();
                         Stopwatch.Stop();
                         if (ConsoleWrite) Console.WriteLine($"{_AcquisitorName} Reading bytes from S7PLC took: {Stopwatch.ElapsedMilliseconds} ms");
     

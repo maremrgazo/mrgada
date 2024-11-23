@@ -56,6 +56,7 @@ public static partial class Mrgada
 
                 case Mrgada.MachineType.Client:
 
+                    InitializeClientConnectThread();
 
                     break;
 

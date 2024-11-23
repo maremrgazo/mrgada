@@ -16,7 +16,6 @@ public static partial class Mrgada
     {
         // OPCUA Acquisitor
         public Opc.UaFx.Client.OpcClient _OpcUaClient;
-        private Func<Opc.UaFx.Client.OpcClient> _OpcUaClientGetter;
         private Thread _OpcUaClientAcquisitorThread;
         public List<Object> _OpcUaTags = [];
 

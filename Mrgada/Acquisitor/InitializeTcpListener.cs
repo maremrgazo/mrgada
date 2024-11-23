@@ -3,7 +3,6 @@
 using S7.Net;
 using System.Net.Sockets;
 using System.Net;
-using static Mrgada;
 
 public static partial class Mrgada
 {

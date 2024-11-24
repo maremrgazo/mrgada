@@ -69,7 +69,7 @@ public static partial class Mrgada
                 {
                     if (IsConnected)
                     {
-                        bool ConsoleWrite = ConsoleWriteWatch.ElapsedMilliseconds >= 5000;
+                        bool ConsoleWrite = ConsoleWriteWatch.ElapsedMilliseconds >= _DebugInterval;
                         if (ConsoleWrite) ConsoleWriteWatch.Restart();
 
                         Thread.Sleep(_AcquisitorThreadSleep);

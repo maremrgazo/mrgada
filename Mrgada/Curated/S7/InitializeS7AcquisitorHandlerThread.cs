@@ -138,7 +138,7 @@ public static partial class Mrgada
                         }
                         if (_ConsoleWrite)
                         {
-                            using (Operation.Time($"{_AcquisitorName,-10}: Reading and Parsing bytes from S7 PLC"))
+                            using (Operation.Time($"{_AcquisitorName,-10}: Reading and Parsing bytes from S7 PLC", -80))
                             {
                                 ParseCVs();
                                 ReadS7dbs();

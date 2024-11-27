@@ -4,6 +4,8 @@ using S7.Net;
 using System.Net.Sockets;
 using System.Net;
 using Serilog;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using S7.Net.Types;
 
 public static partial class Mrgada
 {
@@ -84,6 +86,30 @@ public static partial class Mrgada
                 _AcquisitorType == AcquisitorType.OPCUA
                 )
                 _AcquisitorHighLevelType = AcquisitorHighLevelType.OPCUA;
+        }
+
+        private void AcquisitorServerBroadcast(List<byte> BroadcastBytes)
+        {
+            byte[] BroadcastBytesArray = BroadcastBytes.ToArray();
+            foreach (TcpClient Client in _Clients)
+            {
+                try
+                {
+                    NetworkStream Stream = Client.GetStream();
+                    Stream.Write(BroadcastBytesArray, 0, BroadcastBytesArray.Length);
+                }
+                catch (Exception)
+                {
+                    // Handle any exceptions (e.g., client disconnected during broadcast)
+                    Log.Error("Error while Acquisitor was broadcasting bytes!");
+                    break;
+                }
+            }
+            byte[] ByteLog = new byte[10];
+            Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
+            string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
+
+            Log.Information($"Mrgada Server Broadcast following bytes: {ByteLogString}");
         }
     }
 

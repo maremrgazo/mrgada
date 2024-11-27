@@ -87,7 +87,7 @@ public static partial class Mrgada
 
                         if (_ConsoleWrite)
                         {
-                            using (Operation.Time($"{_AcquisitorName,-10}: Reading tags from OPCUA Server", -80))
+                            using (Operation.Time($"{_AcquisitorName,-10}: {"Reading tags from OPCUA Server", -50}"))
                             {
                                 ReadOpcTags();
                             }

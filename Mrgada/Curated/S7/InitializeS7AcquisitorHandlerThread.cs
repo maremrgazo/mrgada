@@ -106,6 +106,7 @@ public static partial class Mrgada
         public S7.Net.Plc _S7Plc;
         private Thread _S7AcquisitorThread;
         private List<S7db> _S7dbs = [];
+        List<Byte> AcquisitorBroadcastBytes = [];
         private void InitializeS7AcquisitorHandlerThread()
         {
             _S7Plc = new S7.Net.Plc((S7.Net.CpuType)_AcquisitorType, _AcquisitorIp, 0, 1); // TODO Add Rack and Slot for S7 Acquisitors
@@ -138,22 +139,23 @@ public static partial class Mrgada
                         }
                         if (_ConsoleWrite)
                         {
-                            using (Operation.Time($"{_AcquisitorName,-10}: Reading and Parsing bytes from S7 PLC", -80))
+                            using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))
                             {
-                                ParseCVs();
                                 ReadS7dbs();
+                                ParseCVs();
                             }
                         }
                         else
                         {
-                            ParseCVs();
                             ReadS7dbs();
+                            ParseCVs();
                         }
 
                         Thread.Sleep(_AcquisitorThreadInterval);
-
                         // Broadcast CVs to Clients
-                        //MrgadaServerBroadcast(BroadcastBytes);
+                        AcquisitorBroadcastBytes.Add(9);
+                        AcquisitorServerBroadcast(AcquisitorBroadcastBytes);
+                        AcquisitorBroadcastBytes = [];
 
                         iterationTimer.Stop();
                         int remainingTime = (int)(_AcquisitorThreadInterval - iterationTimer.ElapsedMilliseconds);

@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using static Mrgada;
 using System.Diagnostics;
+using Serilog;
+using SerilogTimings;
 
 
 public static partial class Mrgada
@@ -28,20 +30,20 @@ public static partial class Mrgada
                     catch (Exception)
                     {
                         // Handle any exceptions (e.g., client disconnected during broadcast)
-                        if (_ConsoleWrite) Console.WriteLine($"Error while Acquisitor {_AcquisitorName} was broadcasting bytes!");
+                        if (_ConsoleWrite) Log.Information($"Error while Acquisitor {_AcquisitorName} was broadcasting bytes!");
                         break;
                     }
                 }
-                if (_ConsoleWrite) Console.WriteLine($"Acquisitor {_AcquisitorName}Broadcast following bytes to {_Clients.Count} clients: ");
+                if (_ConsoleWrite) Log.Information($"Acquisitor {_AcquisitorName}Broadcast following bytes to {_Clients.Count} clients: ");
                 for (int i = 0; i < (Bytes.Length > 10 ? 10 : Bytes.Length); i++)
                 {
                     if (_ConsoleWrite) Console.Write(Bytes[i] + " ");
                 }
-                if (_ConsoleWrite) Console.WriteLine();
+                //if (_ConsoleWrite) Log.Information();
             }
             else
             {
-                if (_ConsoleWrite) Console.WriteLine($"No Clients connected, Acquisitor {_AcquisitorName} didn't broadcast any bytes");
+                if (_ConsoleWrite) Log.Information($"No Clients connected, Acquisitor {_AcquisitorName} didn't broadcast any bytes");
             }
         }
 
@@ -119,35 +121,46 @@ public static partial class Mrgada
                 {
                     if (_S7Plc.IsConnected)
                     {
+                        Stopwatch iterationTimer = Stopwatch.StartNew();
+
                         _ConsoleWrite = ConsoleWriteWatch.ElapsedMilliseconds >= _DebugInterval;
                         if (_ConsoleWrite) ConsoleWriteWatch.Restart();
 
-                        Thread.Sleep(_AcquisitorThreadSleep);
-
-                        Stopwatch Stopwatch = new Stopwatch();
-
-                        // Read bytes from PLC
-                        Stopwatch.Start();
-                        //foreach (S7db db in _S7dbs)
-                        //{
-                        //    db.bytes = await _S7Plc.ReadBytesAsync(S7.Net.DataType.DataBlock, db.Num, 0, db.Len); // TODO Implement Async
-                        //}
-                        ReadS7dbs();
-                        Stopwatch.Stop();
-                        if (_ConsoleWrite) Console.WriteLine($"{_AcquisitorName} Reading bytes from S7PLC took: {Stopwatch.ElapsedMilliseconds} ms");
+                        Thread.Sleep(_AcquisitorThreadInterval);
 
                         // Parse CVs
-                        Stopwatch.Restart();
-                        foreach (S7db db in _S7dbs)
+                        void ParseCVs()
                         {
-                            db.ParseCVs(); // TODO Implement Async
+                            foreach (S7db db in _S7dbs)
+                            {
+                                db.ParseCVs();
+                            }
                         }
-                        Stopwatch.Stop();
-                        if (_ConsoleWrite) Console.WriteLine($"{_AcquisitorName} Parsing CVs from S7 PLC took: {Stopwatch.ElapsedMilliseconds} ms");
+                        if (_ConsoleWrite)
+                        {
+                            using (Operation.Time($"{_AcquisitorName,-10}: Reading and Parsing bytes from S7 PLC"))
+                            {
+                                ParseCVs();
+                                ReadS7dbs();
+                            }
+                        }
+                        else
+                        {
+                            ParseCVs();
+                            ReadS7dbs();
+                        }
+
+                        Thread.Sleep(_AcquisitorThreadInterval);
 
                         // Broadcast CVs to Clients
                         //MrgadaServerBroadcast(BroadcastBytes);
 
+                        iterationTimer.Stop();
+                        int remainingTime = (int)(_AcquisitorThreadInterval - iterationTimer.ElapsedMilliseconds);
+                        if (remainingTime > 0)
+                        {
+                            Thread.Sleep(remainingTime);
+                        }
                     }
                     else
                     {
@@ -159,8 +172,8 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Console.WriteLine($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
-                            Thread.Sleep(30000);
+                            Log.Information($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
+                            await Task.Delay(30000);
                         }
                     }
                 }

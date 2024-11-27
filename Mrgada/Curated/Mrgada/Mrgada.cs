@@ -1,5 +1,7 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
+using Serilog;
+
 public static partial class Mrgada
 {
     private static string _ServerIp;
@@ -42,7 +44,7 @@ public static partial class Mrgada
 
     public static void Start()
     {
-        Console.WriteLine("Mrgada Started");
+        Log.Information("Mrgada Started");
     }
 }
 

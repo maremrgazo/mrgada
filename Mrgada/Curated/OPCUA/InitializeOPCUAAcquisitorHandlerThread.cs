@@ -8,6 +8,8 @@ using System.Diagnostics;
 using Opc.UaFx.Client;
 using Opc.Ua;
 using static Mrgada.Acquisitor;
+using Serilog;
+using SerilogTimings;
 
 
 public static partial class Mrgada
@@ -69,23 +71,38 @@ public static partial class Mrgada
                 {
                     if (IsConnected)
                     {
-                        bool ConsoleWrite = ConsoleWriteWatch.ElapsedMilliseconds >= _DebugInterval;
-                        if (ConsoleWrite) ConsoleWriteWatch.Restart();
+                        Stopwatch iterationTimer = Stopwatch.StartNew();
 
-                        Thread.Sleep(_AcquisitorThreadSleep);
+                        _ConsoleWrite = ConsoleWriteWatch.ElapsedMilliseconds >= _DebugInterval;
+                        if (_ConsoleWrite) ConsoleWriteWatch.Restart();
 
-                        Stopwatch Stopwatch = new Stopwatch();
+                        void ReadOpcTags()
+                        {
+                            var floatNodes = _OpcUaTags.OfType<OpcUaTag<float>>();
+                            var intSingle = _OpcUaTags.OfType<OpcUaTag<System.Int16>>();
 
-                        // Read bytes from PLC
-                        Stopwatch.Start();
-                        var floatNodes = _OpcUaTags.OfType<OpcUaTag<float>>();
-                        var intSingle = _OpcUaTags.OfType<OpcUaTag<System.Int16>>();
+                            foreach (var NodeFloat in floatNodes) { NodeFloat.ReadNode(); }
+                            foreach (var NodeSingle in intSingle) { NodeSingle.ReadNode(); }
+                        }
 
-                        foreach (var NodeFloat in floatNodes) { NodeFloat.ReadNode(); }
-                        foreach (var NodeSingle in intSingle) { NodeSingle.ReadNode(); }
+                        if (_ConsoleWrite)
+                        {
+                            using (Operation.Time($"{_AcquisitorName,-10}: Reading tags from OPCUA Server"))
+                            {
+                                ReadOpcTags();
+                            }
+                        }
+                        else
+                        {
+                            ReadOpcTags();
+                        }
 
-                        Stopwatch.Stop();
-                        if (ConsoleWrite) Console.WriteLine($"{_AcquisitorName} Reading tags from OPCUA Server took: {Stopwatch.ElapsedMilliseconds} ms");
+                        iterationTimer.Stop();
+                        int remainingTime = (int)(_AcquisitorThreadInterval - iterationTimer.ElapsedMilliseconds);
+                        if (remainingTime > 0)
+                        {
+                            Thread.Sleep(remainingTime);
+                        }
                     }
                     else
                     {
@@ -98,7 +115,7 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Console.WriteLine($"{_AcquisitorName} Can't connect to OPCUA Server, trying again in 30 seconds");
+                            Log.Warning($"{_AcquisitorName,-10}: Can't connect to OPCUA Server, trying again in 30 seconds");
                             Thread.Sleep(30000);
                         }
                     }

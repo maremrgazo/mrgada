@@ -3,6 +3,7 @@
 using S7.Net;
 using System.Net.Sockets;
 using System.Net;
+using Serilog;
 
 public static partial class Mrgada
 {
@@ -28,7 +29,7 @@ public static partial class Mrgada
         public AcquisitorType _AcquisitorType;
         public string _AcquisitorIp;
         public int _AcquisitorTcpPort;
-        public int _AcquisitorThreadSleep;
+        public int _AcquisitorThreadInterval;
 
         private TcpListener _AcquisitorTcpListener;
         private AcquisitorHighLevelType _AcquisitorHighLevelType;
@@ -38,7 +39,7 @@ public static partial class Mrgada
         {
             if (AcquisitorStarted)
             {
-                Console.WriteLine($"Acquisitor {_AcquisitorName} already started!");
+                Log.Information($"Acquisitor {_AcquisitorName} already started!");
                 return;
             }
             AcquisitorStarted = true;
@@ -63,13 +64,13 @@ public static partial class Mrgada
             }
         }
 
-        public Acquisitor(string AcquisitorName, AcquisitorType AcquisitorType, string AcquisitorIp, int AcquisitorTcpPort, int AcquisitorThreadSleep)
+        public Acquisitor(string AcquisitorName, AcquisitorType AcquisitorType, string AcquisitorIp, int AcquisitorTcpPort, int AcquisitorThreadInterval)
         {
             _AcquisitorName = AcquisitorName;
             _AcquisitorType = AcquisitorType;
             _AcquisitorIp = AcquisitorIp;
             _AcquisitorTcpPort = AcquisitorTcpPort;
-            _AcquisitorThreadSleep = AcquisitorThreadSleep;
+            _AcquisitorThreadInterval = AcquisitorThreadInterval;
 
             // Set AcquisitorHighLevelType (S7/OPCUA/...)
             if

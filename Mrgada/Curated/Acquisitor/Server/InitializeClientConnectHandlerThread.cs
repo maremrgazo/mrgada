@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using static Mrgada;
 using System.Security.Cryptography.X509Certificates;
+using Serilog;
 
 public static partial class Mrgada
 {
@@ -36,7 +37,7 @@ public static partial class Mrgada
                         }
 
 
-                        Console.WriteLine($"Client {_Clients.Count} Connected to Acquisitor {_AcquisitorName}!");
+                        Log.Information($"Client {_Clients.Count} Connected to Acquisitor {_AcquisitorName}!");
                         OnClientConnect(client);
                     }
 
@@ -69,7 +70,7 @@ public static partial class Mrgada
 
                             if (!IsClientConnected(client))
                             {
-                                Console.WriteLine($"Client disconnected from Acquisitor {_AcquisitorName}");
+                                Log.Information($"Client disconnected from Acquisitor {_AcquisitorName}");
                                 // Remove the client from the list
                                 _Clients.RemoveAt(i);
                                 // Optionally, close the client to free resources

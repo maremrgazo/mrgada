@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ public static partial class Mrgada
         IPAddress MrgadaServerIp = IPAddress.Parse(Mrgada._ServerIp);
         _MrgadaTcpListener = new TcpListener(MrgadaServerIp, Mrgada._MrgadaServerPort);
         _MrgadaTcpListener.Start();
-        Console.WriteLine($"Mrgada TCP Server Started!");
+        Log.Information($"Mrgada TCP Server Started!");
 
         InitializeClientConnectHandlerThread();
     }
@@ -41,7 +42,7 @@ public static partial class Mrgada
                     }
 
 
-                    Console.WriteLine($"Client {_MrgadaClients.Count} Connected to Mrgada Server!");
+                    Log.Information($"Client {_MrgadaClients.Count} Connected to Mrgada Server!");
                 }
 
                 catch (SocketException)
@@ -72,7 +73,7 @@ public static partial class Mrgada
 
                         if (!IsClientConnected(client))
                         {
-                            Console.WriteLine($"Client disconnected from Mrgada Server");
+                            Log.Information($"Client disconnected from Mrgada Server");
                             // Remove the client from the list
                             _MrgadaClients.RemoveAt(i);
                             // Optionally, close the client to free resources

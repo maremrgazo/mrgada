@@ -3,6 +3,7 @@
 using S7.Net;
 using System.Net.Sockets;
 using System.Net;
+using Serilog;
 
 public static partial class Mrgada
 {
@@ -14,7 +15,8 @@ public static partial class Mrgada
             IPAddress MrgadaServerIp = IPAddress.Parse(Mrgada._ServerIp);
             _AcquisitorTcpListener = new TcpListener(MrgadaServerIp, _AcquisitorTcpPort);
             _AcquisitorTcpListener.Start();
-            Console.WriteLine($"{_AcquisitorName} Acquisitor TCP Server Started!");
+            Log.Information($"{_AcquisitorName,-10}: Acquisitor TCP Server Started!");
+            //Log.Information($"{_AcquisitorName} Acquisitor TCP Server Started!");
         }
           
     }

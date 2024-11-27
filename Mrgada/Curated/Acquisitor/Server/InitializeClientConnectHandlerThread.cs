@@ -72,7 +72,8 @@ public static partial class Mrgada
 
                             if (!IsClientConnected(client))
                             {
-                                Log.Information($"Client disconnected from Acquisitor {_AcquisitorName}");
+                                string clientIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+                                Log.Information($"Client({_Clients.Count}) {clientIP} Disconnected from Acquisitor {_AcquisitorName}!");
                                 // Remove the client from the list
                                 _Clients.RemoveAt(i);
                                 // Optionally, close the client to free resources

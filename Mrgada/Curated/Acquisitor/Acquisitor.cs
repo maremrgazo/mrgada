@@ -90,6 +90,11 @@ public static partial class Mrgada
 
         private void AcquisitorServerBroadcast(List<byte> BroadcastBytes)
         {
+            if (_Clients.Count == 0)
+            {
+                if (_ConsoleWrite) Log.Information($"No Clients connected, Acquisitor {_AcquisitorName,-10}: didn't broadcast any bytes");
+                return;
+            }
             byte[] BroadcastBytesArray = BroadcastBytes.ToArray();
             foreach (TcpClient Client in _Clients)
             {
@@ -109,7 +114,7 @@ public static partial class Mrgada
             Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
             string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
 
-            Log.Information($"Mrgada Server Broadcast following bytes: {ByteLogString}");
+            Log.Information($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
         }
     }
 

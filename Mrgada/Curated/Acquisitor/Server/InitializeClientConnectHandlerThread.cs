@@ -31,13 +31,15 @@ public static partial class Mrgada
                     try
                     {
                         TcpClient client = _AcquisitorTcpListener.AcceptTcpClient();
+                        string clientIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
                         lock (_ClientHandlerThreadLock)
                         {
                             _Clients.Add(client);
                         }
+                       
 
 
-                        Log.Information($"Client {_Clients.Count} Connected to Acquisitor {_AcquisitorName}!");
+                        Log.Information($"Client({_Clients.Count}) {clientIP} Connected to Acquisitor {_AcquisitorName}!");
                         OnClientConnect(client);
                     }
 

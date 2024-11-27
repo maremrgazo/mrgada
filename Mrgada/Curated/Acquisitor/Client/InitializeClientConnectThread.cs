@@ -39,7 +39,7 @@ public static partial class Mrgada
                     }
                     catch (Exception ex)
                     {
-                        Log.Information("Connection attempt failed: " + ex.Message);
+                        Log.Information($"Connection attempt to Mrgada {Mrgada._ServerIp} failed: " + ex.Message);
 
                         Log.Information("Retrying connection in 3 seconds...");
                         Thread.Sleep(3000);

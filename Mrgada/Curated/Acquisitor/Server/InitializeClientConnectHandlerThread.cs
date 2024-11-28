@@ -11,7 +11,7 @@ public static partial class Mrgada
 {
     public partial class Acquisitor 
     {  
-        private Thread _ClientHandlerThread;
+        public Thread _ClientHandlerThread;
         private object _ClientHandlerThreadLock = new();
         private List<TcpClient> _Clients = new();
 

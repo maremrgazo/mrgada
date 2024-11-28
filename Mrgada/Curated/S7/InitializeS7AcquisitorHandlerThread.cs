@@ -40,8 +40,7 @@ public static partial class Mrgada
             {
                 lock (_Acquisitor._S7ByteLock)
                 {
-                    BytesOld = Bytes;
-                    Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, Num, 0, Len);
+                    Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, this.Num, 0, this.Len);
                     //if (!BytesOld.AsSpan().SequenceEqual(Bytes))
                     //{
                     //    _Acquisitor.AcquisitorBroadcast(Bytes);
@@ -58,6 +57,7 @@ public static partial class Mrgada
                         _Acquisitor.AcquisitorBroadcastBytes.AddRange(dbNumByteArray);
                         _Acquisitor.AcquisitorBroadcastBytes.AddRange(Bytes);
                     }
+                    BytesOld = Bytes;
                 }
             }
 
@@ -113,26 +113,26 @@ public static partial class Mrgada
                         Thread.Sleep(_AcquisitorThreadInterval);
 
                         // Parse CVs
-                        void ParseCVs()
-                        {
-                            foreach (S7db db in _S7dbs)
-                            {
-                                db.ParseCVs();
-                            }
-                        }
+                        //void ParseCVs()
+                        //{
+                        //    foreach (S7db db in _S7dbs)
+                        //    {
+                        //        db.ParseCVs();
+                        //    }
+                        //}
 
                         if (_ConsoleWrite)
                         {
                             using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))
                             {
                                 ReadS7dbs();
-                                ParseCVs();
+                                //ParseCVs();
                             }
                         }
                         else
                         {
                             ReadS7dbs();
-                            ParseCVs();
+                            //ParseCVs();
                         }
 
                         //// Broadcast CVs to Clients

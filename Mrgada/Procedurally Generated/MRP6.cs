@@ -50,7 +50,7 @@ public static partial class Mrgada
 
         public override void OnClientConnect(TcpClient client)
         {
-            lock (_S7ByteLock)
+            lock (this._ClientHandlerThread)
             {
                 dbDigitalValves.OnClientConnect();
                 dbAnalogSensors.OnClientConnect();
@@ -59,7 +59,7 @@ public static partial class Mrgada
 
         public override void InitializeS7dbs()
         {
-            dbDigitalValves = new c_dbDigitalValves(52, 791, _S7Plc, this);
+            dbDigitalValves = new c_dbDigitalValves(52, 792, _S7Plc, this);
             dbAnalogSensors = new(51, 2130, _S7Plc, this);
         }
 

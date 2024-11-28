@@ -13,37 +13,29 @@ public static partial class Mrgada
         public override void ParseAcquisitorBroadcast(byte[] Broadcast)
         {
             int i = 0;
-            int BroadcastBytesLengthIndex = 0;
             while (i < Broadcast.Length)
             {
-                if (i == BroadcastBytesLengthIndex)
+                //byte[] dbNumberBytes = new byte[2];
+                //Buffer.BlockCopy(BroadcastBuffer, i, dbNumberBytes, 0, 2);
+
+                short SegmentLength = BitConverter.ToInt16(Broadcast, i);
+                short dbNumber = BitConverter.ToInt16(Broadcast, i + 2);
+                byte[] dbBytes = new byte[SegmentLength - 2];
+                Buffer.BlockCopy(Broadcast, i + 4, dbBytes, 0, dbBytes.Length);
+
+                switch (dbNumber)
                 {
-
-                    //byte[] dbNumberBytes = new byte[2];
-                    //Buffer.BlockCopy(BroadcastBuffer, i, dbNumberBytes, 0, 2);
-
-                    short SegmentLength = BitConverter.ToInt16(Broadcast, i);
-                    short dbNumber = BitConverter.ToInt16(Broadcast, i + 2);
-                    byte[] dbBytes = new byte[SegmentLength - 2];
-                    Buffer.BlockCopy(Broadcast, i + 4, dbBytes, 0, dbBytes.Length);
-
-                    switch (dbNumber)
-                    {
-                        case 52:
-                            dbDigitalValves.Bytes = dbBytes;
-                            break;
-                        case 51:
-                            dbAnalogSensors.Bytes = dbBytes;
-                            break;
-                    }
-
-                    BroadcastBytesLengthIndex = SegmentLength;
-                    i += SegmentLength;
-
-                    if (Broadcast[i] == 0) break;
-
+                    case 52:
+                        dbDigitalValves.Bytes = dbBytes;
+                        break;
+                    case 51:
+                        dbAnalogSensors.Bytes = dbBytes;
+                        break;
                 }
-                i++;
+
+                i += SegmentLength;
+
+                if (Broadcast[i] == 0) break;
             }
         }
 
@@ -62,7 +54,7 @@ public static partial class Mrgada
         public override void InitializeS7dbs()
         {
             dbDigitalValves = new c_dbDigitalValves(52, 791, _S7Plc, this);
-            dbAnalogSensors = new(51, 2119, _S7Plc, this);
+            dbAnalogSensors = new(51, 2130, _S7Plc, this);
         }
 
         public c_dbDigitalValves dbDigitalValves;

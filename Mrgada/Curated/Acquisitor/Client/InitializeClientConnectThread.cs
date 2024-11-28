@@ -4,6 +4,9 @@ using S7.Net;
 using System.Net.Sockets;
 using System.Net;
 using Serilog;
+using System.Collections;
+using static Mrgada.MRP6;
+using System.Security.Cryptography.X509Certificates;
 
 public static partial class Mrgada
 {
@@ -52,11 +55,15 @@ public static partial class Mrgada
             ClientConnectThread.Start();
         }
 
+        public virtual void ParseAcquisitorBroadcast(byte[] Broadcast)
+        {
+        }
+
         private void StartClientBroadcastListenThread(CancellationToken cancellationToken)
         {
             ClientBroadcastListenThread = new Thread(() =>
             {
-                byte[] BroadcastBuffer = new byte[2130];
+                byte[] BroadcastBuffer = new byte[65563];
 
                 try
                 {
@@ -72,8 +79,11 @@ public static partial class Mrgada
                                 break;
                             }
 
+                            ParseAcquisitorBroadcast(BroadcastBuffer);
+
+
                             Log.Information($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
-                            for (int i = 0; i < 10; i++) { Console.Write(BroadcastBuffer[i] + " "); }
+                            for (int j = 0; j < 10; j++) { Console.Write(BroadcastBuffer[j] + " "); }
                             //Log.Information();
                         }
                     }

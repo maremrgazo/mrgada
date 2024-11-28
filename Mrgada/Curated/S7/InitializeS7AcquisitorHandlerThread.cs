@@ -51,7 +51,7 @@ public static partial class Mrgada
         {
             public readonly int Num;
             public readonly int Len;
-            private byte[] Bytes;
+            public byte[] Bytes;
             private byte[] BytesOld;
             private S7.Net.Plc _S7Plc;
             private Acquisitor _Acquisitor;

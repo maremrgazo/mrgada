@@ -4,11 +4,11 @@
 using Opc.UaFx.Client;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    //.WriteTo.File("C:\\Users\\lazar\\Desktop\\mrgadaV2\\Mrgada\\logs\\log-.txt", rollingInterval: RollingInterval.Hour) // PAZI! ni delal na ubuntu
-    .MinimumLevel.Debug() 
-    .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//    .WriteTo.Console()
+//    //.WriteTo.File("C:\\Users\\lazar\\Desktop\\mrgadaV2\\Mrgada\\logs\\log-.txt", rollingInterval: RollingInterval.Hour) // PAZI! ni delal na ubuntu
+//    .MinimumLevel.Debug() 
+//    .CreateLogger();
 
 Mrgada.Initialize("192.168.64.107", Mrgada.MachineType.Client, 61101, 200);
 

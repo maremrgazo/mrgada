@@ -34,7 +34,7 @@ public static partial class Mrgada
                         dbAnalogSensors.Bytes = dbBytes;
                         break;
                 }
-                Log.Information($"{_AcquisitorName,-10}: Recieved Bytes from S7 Acquisitor for db {dbNumber}, len {dbBytes.Length}");
+                Console.WriteLine($"{_AcquisitorName,-10}: Recieved Bytes from S7 Acquisitor for db {dbNumber}, len {dbBytes.Length}");
 
                 i += SegmentLength;
 

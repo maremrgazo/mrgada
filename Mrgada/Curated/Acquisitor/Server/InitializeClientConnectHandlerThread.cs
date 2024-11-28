@@ -39,7 +39,7 @@ public static partial class Mrgada
                        
 
 
-                        Log.Information($"Client({_Clients.Count}) {clientIP} Connected to Acquisitor {_AcquisitorName}!");
+                        Console.WriteLine($"Client({_Clients.Count}) {clientIP} Connected to Acquisitor {_AcquisitorName}!");
                         OnClientConnect(client);
                     }
 
@@ -73,7 +73,7 @@ public static partial class Mrgada
                             if (!IsClientConnected(client))
                             {
                                 string clientIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
-                                Log.Information($"Client({_Clients.Count}) {clientIP} Disconnected from Acquisitor {_AcquisitorName}!");
+                                Console.WriteLine($"Client({_Clients.Count}) {clientIP} Disconnected from Acquisitor {_AcquisitorName}!");
                                 // Remove the client from the list
                                 _Clients.RemoveAt(i);
                                 // Optionally, close the client to free resources

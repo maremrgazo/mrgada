@@ -15,8 +15,8 @@ public static partial class Mrgada
             IPAddress MrgadaServerIp = IPAddress.Parse(Mrgada._ServerIp);
             _AcquisitorTcpListener = new TcpListener(MrgadaServerIp, _AcquisitorTcpPort);
             _AcquisitorTcpListener.Start();
-            Log.Information($"{_AcquisitorName,-10}: Acquisitor TCP Server Started!");
-            //Log.Information($"{_AcquisitorName} Acquisitor TCP Server Started!");
+            Console.WriteLine($"{_AcquisitorName,-10}: Acquisitor TCP Server Started!");
+            //Console.WriteLine($"{_AcquisitorName} Acquisitor TCP Server Started!");
         }
           
     }

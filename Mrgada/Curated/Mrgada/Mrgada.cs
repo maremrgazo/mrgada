@@ -44,7 +44,7 @@ public static partial class Mrgada
 
     public static void Start()
     {
-        Log.Information("Mrgada Started");
+        Console.WriteLine("Mrgada Started");
     }
 }
 

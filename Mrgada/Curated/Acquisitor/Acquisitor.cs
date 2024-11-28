@@ -42,7 +42,7 @@ public static partial class Mrgada
         {
             if (AcquisitorStarted)
             {
-                Log.Information($"Acquisitor {_AcquisitorName} already started!");
+                Console.WriteLine($"Acquisitor {_AcquisitorName} already started!");
                 return;
             }
             AcquisitorStarted = true;
@@ -94,7 +94,7 @@ public static partial class Mrgada
             if (BroadcastBytes.Count == 0) return;
             if (_Clients.Count == 0)
             {
-                if (_ConsoleWrite) Log.Information($"No Clients connected, Acquisitor {_AcquisitorName,-10}: didn't broadcast any bytes");
+                if (_ConsoleWrite) Console.WriteLine($"No Clients connected, Acquisitor {_AcquisitorName,-10}: didn't broadcast any bytes");
                 return;
             }
             byte[] BroadcastBytesArray = BroadcastBytes.ToArray();
@@ -112,7 +112,7 @@ public static partial class Mrgada
                     break;
                 }
             }
-            Log.Information($"{_AcquisitorName, -8}: Acquisitor Broadcast bytes len ({BroadcastBytes.Count}) to {_Clients.Count} Clients!");
+            Console.WriteLine($"{_AcquisitorName, -8}: Acquisitor Broadcast bytes len ({BroadcastBytes.Count}) to {_Clients.Count} Clients!");
             //byte[] ByteLog = new byte[10];
             //Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
             //string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
@@ -122,7 +122,7 @@ public static partial class Mrgada
             //    if (_ConsoleWrite) Console.WriteLine(Convert.ToString(b, 2).PadLeft(8, '0')); // Convert to binary and pad to 8 bits
             //}
 
-            //Log.Information($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
+            //Console.WriteLine($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
         }
     }
 

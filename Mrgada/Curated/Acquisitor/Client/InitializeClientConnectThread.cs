@@ -30,7 +30,7 @@ public static partial class Mrgada
                         {
                             TcpClient = new TcpClient();
                             TcpClient.Connect(Mrgada._ServerIp, _AcquisitorTcpPort);
-                            Log.Information($"Client has connected to {_AcquisitorName} Acquisitor!");
+                            Console.WriteLine($"Client has connected to {_AcquisitorName} Acquisitor!");
                             ClientNetworkStream = TcpClient.GetStream();
                             ClientConnected = true;
 
@@ -42,9 +42,9 @@ public static partial class Mrgada
                     }
                     catch (Exception ex)
                     {
-                        Log.Information($"Connection attempt to Mrgada {Mrgada._ServerIp} failed: " + ex.Message);
+                        Console.WriteLine($"Connection attempt to Mrgada {Mrgada._ServerIp} failed: " + ex.Message);
 
-                        Log.Information("Retrying connection in 3 seconds...");
+                        Console.WriteLine("Retrying connection in 3 seconds...");
                         Thread.Sleep(3000);
                     }
                 }
@@ -74,7 +74,7 @@ public static partial class Mrgada
                             int bytesRead = ClientNetworkStream.Read(BroadcastBuffer, 0, BroadcastBuffer.Length);
                             if (bytesRead == 0)
                             {
-                                Log.Information($"{_AcquisitorName} Acquisitor has closed the connection.");
+                                Console.WriteLine($"{_AcquisitorName} Acquisitor has closed the connection.");
                                ClientConnected = false;
                                 break;
                             }
@@ -82,16 +82,16 @@ public static partial class Mrgada
                             ParseAcquisitorBroadcast(BroadcastBuffer);
                             BroadcastBuffer = new byte[65563];
 
-                            //Log.Information($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
+                            //Console.WriteLine($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
                             //for (int j = 0; j < 10; j++) { Console.Write(BroadcastBuffer[j] + " "); }
-                            //Log.Information();
+                            //Console.WriteLine();
                         }
                         Thread.Sleep(200);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Connection lost to Acquisitor {_AcquisitorName}: " + ex.Message);
+                    Console.WriteLine($"Connection lost to Acquisitor {_AcquisitorName}: " + ex.Message);
                     ClientConnected = false;
                 }
                 finally
@@ -121,11 +121,11 @@ public static partial class Mrgada
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Error during disconnect from Acquisitor {_AcquisitorName}: " + ex.Message);
+                    Console.WriteLine($"Error during disconnect from Acquisitor {_AcquisitorName}: " + ex.Message);
                 }
                 finally
                 {
-                    Log.Information($"Disconnected from Acquisitor {_AcquisitorName}.");
+                    Console.WriteLine($"Disconnected from Acquisitor {_AcquisitorName}.");
                     ClientConnected = false;
 
                     // Cancel the listening thread gracefully

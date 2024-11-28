@@ -21,7 +21,7 @@ public static partial class Mrgada
         IPAddress MrgadaServerIp = IPAddress.Parse(Mrgada._ServerIp);
         _MrgadaTcpListener = new TcpListener(MrgadaServerIp, Mrgada._MrgadaServerPort);
         _MrgadaTcpListener.Start();
-        Log.Information($"Mrgada TCP Server Started!");
+        Console.WriteLine($"Mrgada TCP Server Started!");
 
         InitializeClientConnectHandlerThread();
     }
@@ -42,7 +42,7 @@ public static partial class Mrgada
                     }
 
 
-                    Log.Information($"Client {_MrgadaClients.Count} Connected to Mrgada Server!");
+                    Console.WriteLine($"Client {_MrgadaClients.Count} Connected to Mrgada Server!");
                 }
 
                 catch (SocketException)
@@ -73,7 +73,7 @@ public static partial class Mrgada
 
                         if (!IsClientConnected(client))
                         {
-                            Log.Information($"Client disconnected from Mrgada Server");
+                            Console.WriteLine($"Client disconnected from Mrgada Server");
                             // Remove the client from the list
                             _MrgadaClients.RemoveAt(i);
                             // Optionally, close the client to free resources

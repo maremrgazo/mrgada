@@ -31,7 +31,7 @@ public static partial class Mrgada
                     {
                         _MrgadaTcpClient = new TcpClient();
                         _MrgadaTcpClient.Connect(Mrgada._ServerIp, Mrgada._MrgadaServerPort);
-                        Log.Information($"Client has connected to Mrgada Server!");
+                        Console.WriteLine($"Client has connected to Mrgada Server!");
                         _MrgadaClientNetworkStream = _MrgadaTcpClient.GetStream();
                         _MrgadatClientConnected = true;
 
@@ -43,9 +43,9 @@ public static partial class Mrgada
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Connection attempt failed: " + ex.Message);
+                    Console.WriteLine("Connection attempt failed: " + ex.Message);
 
-                    Log.Information("Retrying connection in 3 seconds...");
+                    Console.WriteLine("Retrying connection in 3 seconds...");
                     Thread.Sleep(3000);
                 }
             }
@@ -71,7 +71,7 @@ public static partial class Mrgada
                         int bytesRead = _MrgadaClientNetworkStream.Read(BroadcastBuffer, 0, BroadcastBuffer.Length);
                         if (bytesRead == 0)
                         {
-                            Log.Information($"Mrgada Server has closed the connection.");
+                            Console.WriteLine($"Mrgada Server has closed the connection.");
                             _MrgadatClientConnected = false;
                             break;
                         }
@@ -82,7 +82,7 @@ public static partial class Mrgada
             }
             catch (Exception ex)
             {
-                Log.Information($"Connection lost to Mrgada Server:" + ex.Message);
+                Console.WriteLine($"Connection lost to Mrgada Server:" + ex.Message);
                 _MrgadatClientConnected = false;
             }
             finally
@@ -112,11 +112,11 @@ public static partial class Mrgada
             }
             catch (Exception ex)
             {
-                Log.Information($"Error during disconnect from Mrgada Server: " + ex.Message);
+                Console.WriteLine($"Error during disconnect from Mrgada Server: " + ex.Message);
             }
             finally
             {
-                Log.Information($"Disconnected from Mrgada Server.");
+                Console.WriteLine($"Disconnected from Mrgada Server.");
                 _MrgadatClientConnected = false;
 
                 // Cancel the listening thread gracefully

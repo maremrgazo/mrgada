@@ -115,7 +115,7 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Log.Warning($"{_AcquisitorName,-10}: Can't connect to OPCUA Server, trying again in 30 seconds");
+                            Console.WriteLine($"{_AcquisitorName,-10}: Can't connect to OPCUA Server, trying again in 30 seconds");
                             Thread.Sleep(30000);
                         }
                     }

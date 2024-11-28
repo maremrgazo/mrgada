@@ -160,7 +160,7 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Log.Information($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
+                            Console.WriteLine($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
                             await Task.Delay(30000);
                         }
                     }

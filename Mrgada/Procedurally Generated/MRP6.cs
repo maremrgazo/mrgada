@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using Serilog;
+using System.Net.Sockets;
 
 public static partial class Mrgada
 {
@@ -20,7 +21,7 @@ public static partial class Mrgada
 
                 short SegmentLength = BitConverter.ToInt16(Broadcast, i);
                 short dbNumber = BitConverter.ToInt16(Broadcast, i + 2);
-                byte[] dbBytes = new byte[SegmentLength - 2];
+                byte[] dbBytes = new byte[SegmentLength - 4];
                 Buffer.BlockCopy(Broadcast, i + 4, dbBytes, 0, dbBytes.Length);
 
                 switch (dbNumber)
@@ -32,6 +33,7 @@ public static partial class Mrgada
                         dbAnalogSensors.Bytes = dbBytes;
                         break;
                 }
+                Log.Information($"{_AcquisitorName,-10}: Recieved Bytes from S7 Acquisitor for db {dbNumber}, len {dbBytes.Length}");
 
                 i += SegmentLength;
 

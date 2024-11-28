@@ -82,8 +82,8 @@ public static partial class Mrgada
                             ParseAcquisitorBroadcast(BroadcastBuffer);
 
 
-                            Log.Information($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
-                            for (int j = 0; j < 10; j++) { Console.Write(BroadcastBuffer[j] + " "); }
+                            //Log.Information($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
+                            //for (int j = 0; j < 10; j++) { Console.Write(BroadcastBuffer[j] + " "); }
                             //Log.Information();
                         }
                     }

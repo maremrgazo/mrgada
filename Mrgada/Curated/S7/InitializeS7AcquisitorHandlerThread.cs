@@ -18,6 +18,7 @@ public static partial class Mrgada
 
         private void AcquisitorBroadcast(byte[] Bytes)
         {
+            if (Bytes.Length == 0) return;
             if (_Clients.Count > 0)
             {
                 foreach (TcpClient Client in _Clients)
@@ -34,11 +35,12 @@ public static partial class Mrgada
                         break;
                     }
                 }
-                if (_ConsoleWrite) Log.Information($"Acquisitor {_AcquisitorName}Broadcast following bytes to {_Clients.Count} clients: ");
-                for (int i = 0; i < (Bytes.Length > 10 ? 10 : Bytes.Length); i++)
-                {
-                    if (_ConsoleWrite) Console.Write(Bytes[i] + " ");
-                }
+                if (_ConsoleWrite) Log.Information($"{_AcquisitorName, -8}; Broadcast bytes len ({Bytes.Length}) to {_Clients.Count} clients: ");
+                //if (_ConsoleWrite) Log.Information($"Acquisitor {_AcquisitorName}Broadcast following bytes to {_Clients.Count} clients: ");
+                //for (int i = 0; i < (Bytes.Length > 10 ? 10 : Bytes.Length); i++)
+                //{
+                //    if (_ConsoleWrite) Console.Write(Bytes[i] + " ");
+                //}
                 //if (_ConsoleWrite) Log.Information();
             }
             else

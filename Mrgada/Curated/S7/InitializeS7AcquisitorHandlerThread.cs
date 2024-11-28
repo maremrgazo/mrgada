@@ -72,10 +72,20 @@ public static partial class Mrgada
                 BytesOld = Bytes;
                 Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, Num, 0, Len);
 
-                if (!BytesOld.AsSpan().SequenceEqual(Bytes))
-                {
-                    _Acquisitor.AcquisitorBroadcast(Bytes);
-                }
+                //if (!BytesOld.AsSpan().SequenceEqual(Bytes))
+                //{
+                //    _Acquisitor.AcquisitorBroadcast(Bytes);
+                //}
+
+                short dbNum = (short) this.Num;
+                byte[] dbNumByteArray = BitConverter.GetBytes(dbNum);
+
+                short BroadcastBytesLength = (short)(dbNumByteArray.Length + Bytes.Length);
+                byte[] BroadcastBytesLengthByteArray = BitConverter.GetBytes(BroadcastBytesLength);
+
+                _Acquisitor.AcquisitorBroadcastBytes.AddRange(BroadcastBytesLengthByteArray);
+                _Acquisitor.AcquisitorBroadcastBytes.AddRange(dbNumByteArray);
+                _Acquisitor.AcquisitorBroadcastBytes.AddRange(Bytes);
             }
 
             public void OnClientConnect()
@@ -106,7 +116,7 @@ public static partial class Mrgada
         public S7.Net.Plc _S7Plc;
         private Thread _S7AcquisitorThread;
         private List<S7db> _S7dbs = [];
-        List<Byte> AcquisitorBroadcastBytes = [];
+        private List<Byte> AcquisitorBroadcastBytes = [];
         private void InitializeS7AcquisitorHandlerThread()
         {
             _S7Plc = new S7.Net.Plc((S7.Net.CpuType)_AcquisitorType, _AcquisitorIp, 0, 1); // TODO Add Rack and Slot for S7 Acquisitors
@@ -151,11 +161,13 @@ public static partial class Mrgada
                             ParseCVs();
                         }
 
-                        Thread.Sleep(_AcquisitorThreadInterval);
-                        // Broadcast CVs to Clients
-                        AcquisitorBroadcastBytes.Add(9);
+                        //// Broadcast CVs to Clients
                         AcquisitorServerBroadcast(AcquisitorBroadcastBytes);
                         AcquisitorBroadcastBytes = [];
+
+                        Thread.Sleep(_AcquisitorThreadInterval);
+
+                       
 
                         iterationTimer.Stop();
                         int remainingTime = (int)(_AcquisitorThreadInterval - iterationTimer.ElapsedMilliseconds);

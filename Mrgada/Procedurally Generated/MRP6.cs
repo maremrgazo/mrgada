@@ -21,7 +21,7 @@ public static partial class Mrgada
 
         public override void InitializeS7dbs()
         {
-            dbDigitalValves = new c_dbDigitalValves(52, 200, _S7Plc, this);
+            dbDigitalValves = new c_dbDigitalValves(52, 791, _S7Plc, this);
         }
 
         c_dbDigitalValves dbDigitalValves;

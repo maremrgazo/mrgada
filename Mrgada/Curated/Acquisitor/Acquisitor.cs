@@ -6,6 +6,7 @@ using System.Net;
 using Serilog;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using S7.Net.Types;
+using System.Collections;
 
 public static partial class Mrgada
 {
@@ -114,7 +115,12 @@ public static partial class Mrgada
             Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
             string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
 
-            Log.Information($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
+            foreach (byte b in ByteLogString)
+            {
+                if (_ConsoleWrite) Console.WriteLine(Convert.ToString(b, 2).PadLeft(8, '0')); // Convert to binary and pad to 8 bits
+            }
+
+            //Log.Information($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
         }
     }
 

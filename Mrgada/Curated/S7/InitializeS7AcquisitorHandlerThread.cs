@@ -80,7 +80,7 @@ public static partial class Mrgada
                 short dbNum = (short) this.Num;
                 byte[] dbNumByteArray = BitConverter.GetBytes(dbNum);
 
-                short BroadcastBytesLength = (short)(dbNumByteArray.Length + Bytes.Length);
+                short BroadcastBytesLength = (short)(dbNumByteArray.Length + Bytes.Length + 2);
                 byte[] BroadcastBytesLengthByteArray = BitConverter.GetBytes(BroadcastBytesLength);
 
                 _Acquisitor.AcquisitorBroadcastBytes.AddRange(BroadcastBytesLengthByteArray);

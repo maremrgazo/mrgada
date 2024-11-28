@@ -37,6 +37,7 @@ public static partial class Mrgada
                             break;
                     }
 
+                    BroadcastBytesLengthIndex = SegmentLength;
                     i += SegmentLength;
 
                     if (Broadcast[i] == 0) break;

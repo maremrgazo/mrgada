@@ -80,12 +80,13 @@ public static partial class Mrgada
                             }
 
                             ParseAcquisitorBroadcast(BroadcastBuffer);
-
+                            BroadcastBuffer = new byte[65563];
 
                             //Log.Information($"{_AcquisitorName} Acquisitor has Sent Broadcast:");
                             //for (int j = 0; j < 10; j++) { Console.Write(BroadcastBuffer[j] + " "); }
                             //Log.Information();
                         }
+                        Thread.Sleep(200);
                     }
                 }
                 catch (Exception ex)

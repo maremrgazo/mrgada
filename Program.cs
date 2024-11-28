@@ -2,7 +2,7 @@
 
 
 using Opc.UaFx.Client;
-using Serilog;
+
 
 //Log.Logger = new LoggerConfiguration()
 //    .WriteTo.Console()

@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿
 using System.Net.Sockets;
 using static Mrgada;
 

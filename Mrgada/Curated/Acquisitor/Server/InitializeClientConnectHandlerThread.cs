@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using static Mrgada;
 using System.Security.Cryptography.X509Certificates;
-using Serilog;
+
 
 public static partial class Mrgada
 {

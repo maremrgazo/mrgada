@@ -3,7 +3,7 @@
 using S7.Net;
 using System.Net.Sockets;
 using System.Net;
-using Serilog;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using S7.Net.Types;
 using System.Collections;
@@ -108,7 +108,7 @@ public static partial class Mrgada
                 catch (Exception)
                 {
                     // Handle any exceptions (e.g., client disconnected during broadcast)
-                    Log.Error("Error while Acquisitor was broadcasting bytes!");
+                    Console.WriteLine("Error while Acquisitor was broadcasting bytes!");
                     break;
                 }
             }

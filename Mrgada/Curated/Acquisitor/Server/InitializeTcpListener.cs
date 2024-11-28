@@ -3,7 +3,7 @@
 using S7.Net;
 using System.Net.Sockets;
 using System.Net;
-using Serilog;
+
 
 public static partial class Mrgada
 {

@@ -5,8 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using static Mrgada;
 using System.Diagnostics;
-using Serilog;
-using SerilogTimings;
+
+
 
 
 public static partial class Mrgada
@@ -121,19 +121,20 @@ public static partial class Mrgada
                         //    }
                         //}
 
-                        if (_ConsoleWrite)
-                        {
-                            using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))
-                            {
-                                ReadS7dbs();
-                                //ParseCVs();
-                            }
-                        }
-                        else
-                        {
-                            ReadS7dbs();
-                            //ParseCVs();
-                        }
+                        //if (_ConsoleWrite)
+                        //{
+                        //    using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))
+                        //    {
+                        //        ReadS7dbs();
+                        //        //ParseCVs();
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    ReadS7dbs();
+                        //    //ParseCVs();
+                        //}
+                        ReadS7dbs();
 
                         //// Broadcast CVs to Clients
                         AcquisitorServerBroadcast(AcquisitorBroadcastBytes);

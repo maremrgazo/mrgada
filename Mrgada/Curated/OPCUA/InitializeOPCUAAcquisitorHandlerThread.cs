@@ -8,8 +8,8 @@ using System.Diagnostics;
 using Opc.UaFx.Client;
 using Opc.Ua;
 using static Mrgada.Acquisitor;
-using Serilog;
-using SerilogTimings;
+
+
 
 
 public static partial class Mrgada
@@ -85,17 +85,18 @@ public static partial class Mrgada
                             foreach (var NodeSingle in intSingle) { NodeSingle.ReadNode(); }
                         }
 
-                        if (_ConsoleWrite)
-                        {
-                            using (Operation.Time($"{_AcquisitorName,-10}: {"Reading tags from OPCUA Server", -50}"))
-                            {
-                                ReadOpcTags();
-                            }
-                        }
-                        else
-                        {
-                            ReadOpcTags();
-                        }
+                        //if (_ConsoleWrite)
+                        //{
+                        //    using (Operation.Time($"{_AcquisitorName,-10}: {"Reading tags from OPCUA Server", -50}"))
+                        //    {
+                        //        ReadOpcTags();
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    ReadOpcTags();
+                        //}
+                        ReadOpcTags();
 
                         iterationTimer.Stop();
                         int remainingTime = (int)(_AcquisitorThreadInterval - iterationTimer.ElapsedMilliseconds);

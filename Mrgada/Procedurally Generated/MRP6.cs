@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System.Net.Sockets;
+using static Mrgada;
 
 public static partial class Mrgada
 {
@@ -49,8 +50,11 @@ public static partial class Mrgada
 
         public override void OnClientConnect(TcpClient client)
         {
-            dbDigitalValves.OnClientConnect();
-            dbAnalogSensors.OnClientConnect();
+            lock (_S7ByteLock)
+            {
+                dbDigitalValves.OnClientConnect();
+                dbAnalogSensors.OnClientConnect();
+            }
         }
 
         public override void InitializeS7dbs()

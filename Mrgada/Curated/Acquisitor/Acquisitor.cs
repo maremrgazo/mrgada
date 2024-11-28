@@ -91,6 +91,7 @@ public static partial class Mrgada
 
         private void AcquisitorServerBroadcast(List<byte> BroadcastBytes)
         {
+            if (BroadcastBytes.Count == 0) return;
             if (_Clients.Count == 0)
             {
                 if (_ConsoleWrite) Log.Information($"No Clients connected, Acquisitor {_AcquisitorName,-10}: didn't broadcast any bytes");
@@ -111,14 +112,15 @@ public static partial class Mrgada
                     break;
                 }
             }
-            byte[] ByteLog = new byte[10];
-            Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
-            string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
+            Log.Information($"{_AcquisitorName, -8}: Acquisitor Broadcast bytes len ({BroadcastBytes.Count}) to {_Clients.Count} Clients!");
+            //byte[] ByteLog = new byte[10];
+            //Array.Copy(BroadcastBytesArray, ByteLog, Math.Min(BroadcastBytesArray.Length, ByteLog.Length));
+            //string ByteLogString = BitConverter.ToString(ByteLog).Replace("-", "");
 
-            foreach (byte b in ByteLogString)
-            {
-                if (_ConsoleWrite) Console.WriteLine(Convert.ToString(b, 2).PadLeft(8, '0')); // Convert to binary and pad to 8 bits
-            }
+            //foreach (byte b in ByteLogString)
+            //{
+            //    if (_ConsoleWrite) Console.WriteLine(Convert.ToString(b, 2).PadLeft(8, '0')); // Convert to binary and pad to 8 bits
+            //}
 
             //Log.Information($"{_AcquisitorName, -10}: Acquisitor Broadcast following bytes: {ByteLogString}");
         }

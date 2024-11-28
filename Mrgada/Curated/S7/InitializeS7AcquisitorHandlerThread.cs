@@ -15,40 +15,7 @@ public static partial class Mrgada
     {
         private int _DebugInterval = 5000;
         private bool _ConsoleWrite = false;
-
-        private void AcquisitorBroadcast(byte[] Bytes)
-        {
-            if (Bytes.Length == 0) return;
-            if (_Clients.Count > 0)
-            {
-                foreach (TcpClient Client in _Clients)
-                {
-                    try
-                    {
-                        NetworkStream Stream = Client.GetStream();
-                        Stream.Write(Bytes, 0, Bytes.Length);
-                    }
-                    catch (Exception)
-                    {
-                        // Handle any exceptions (e.g., client disconnected during broadcast)
-                        if (_ConsoleWrite) Log.Information($"Error while Acquisitor {_AcquisitorName} was broadcasting bytes!");
-                        break;
-                    }
-                }
-                if (_ConsoleWrite) Log.Information($"{_AcquisitorName, -8}; Broadcast bytes len ({Bytes.Length}) to {_Clients.Count} clients: ");
-                //if (_ConsoleWrite) Log.Information($"Acquisitor {_AcquisitorName}Broadcast following bytes to {_Clients.Count} clients: ");
-                //for (int i = 0; i < (Bytes.Length > 10 ? 10 : Bytes.Length); i++)
-                //{
-                //    if (_ConsoleWrite) Console.Write(Bytes[i] + " ");
-                //}
-                //if (_ConsoleWrite) Log.Information();
-            }
-            else
-            {
-                if (_ConsoleWrite) Log.Information($"No Clients connected, Acquisitor {_AcquisitorName} didn't broadcast any bytes");
-            }
-        }
-
+        public object _S7ByteLock = new();
         public class S7db
         {
             public readonly int Num;
@@ -71,23 +38,27 @@ public static partial class Mrgada
 
             public void Read()
             {
-                BytesOld = Bytes;
-                Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, Num, 0, Len);
+                lock (_Acquisitor._S7ByteLock)
+                {
+                    BytesOld = Bytes;
+                    Bytes = _S7Plc.ReadBytes(S7.Net.DataType.DataBlock, Num, 0, Len);
+                    //if (!BytesOld.AsSpan().SequenceEqual(Bytes))
+                    //{
+                    //    _Acquisitor.AcquisitorBroadcast(Bytes);
+                    //}
+                    if (!Bytes.SequenceEqual(BytesOld))
+                    {
+                        short dbNum = (short)this.Num;
+                        byte[] dbNumByteArray = BitConverter.GetBytes(dbNum);
 
-                //if (!BytesOld.AsSpan().SequenceEqual(Bytes))
-                //{
-                //    _Acquisitor.AcquisitorBroadcast(Bytes);
-                //}
+                        short BroadcastBytesLength = (short)(dbNumByteArray.Length + Bytes.Length + 2);
+                        byte[] BroadcastBytesLengthByteArray = BitConverter.GetBytes(BroadcastBytesLength);
 
-                short dbNum = (short) this.Num;
-                byte[] dbNumByteArray = BitConverter.GetBytes(dbNum);
-
-                short BroadcastBytesLength = (short)(dbNumByteArray.Length + Bytes.Length + 2);
-                byte[] BroadcastBytesLengthByteArray = BitConverter.GetBytes(BroadcastBytesLength);
-
-                _Acquisitor.AcquisitorBroadcastBytes.AddRange(BroadcastBytesLengthByteArray);
-                _Acquisitor.AcquisitorBroadcastBytes.AddRange(dbNumByteArray);
-                _Acquisitor.AcquisitorBroadcastBytes.AddRange(Bytes);
+                        _Acquisitor.AcquisitorBroadcastBytes.AddRange(BroadcastBytesLengthByteArray);
+                        _Acquisitor.AcquisitorBroadcastBytes.AddRange(dbNumByteArray);
+                        _Acquisitor.AcquisitorBroadcastBytes.AddRange(Bytes);
+                    }
+                }
             }
 
             public void OnClientConnect()
@@ -149,6 +120,7 @@ public static partial class Mrgada
                                 db.ParseCVs();
                             }
                         }
+
                         if (_ConsoleWrite)
                         {
                             using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))

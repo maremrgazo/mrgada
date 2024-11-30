@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using static Mrgada;
 using System.Diagnostics;
+using Serilog;
+using SerilogTimings;
 
 
 
@@ -121,20 +123,20 @@ public static partial class Mrgada
                         //    }
                         //}
 
-                        //if (_ConsoleWrite)
-                        //{
-                        //    using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC", -50}"))
-                        //    {
-                        //        ReadS7dbs();
-                        //        //ParseCVs();
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    ReadS7dbs();
-                        //    //ParseCVs();
-                        //}
-                        ReadS7dbs();
+                        if (_ConsoleWrite)
+                        {
+                            using (Operation.Time($"{_AcquisitorName,-10}: {"Reading and Parsing bytes from S7 PLC",-50}"))
+                            {
+                                ReadS7dbs();
+                                //ParseCVs();
+                            }
+                        }
+                        else
+                        {
+                            ReadS7dbs();
+                            //ParseCVs();
+                        }
+                        //ReadS7dbs();
 
                         //// Broadcast CVs to Clients
                         AcquisitorServerBroadcast(AcquisitorBroadcastBytes);
@@ -161,7 +163,7 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Console.WriteLine($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
+                            Log.Information($"{_AcquisitorName} Can't connect to S7 PLC, trying again in 30 seconds");
                             await Task.Delay(30000);
                         }
                     }

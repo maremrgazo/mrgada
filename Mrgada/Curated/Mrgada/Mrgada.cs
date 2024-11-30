@@ -2,6 +2,8 @@
 
 
 
+using Serilog;
+
 public static partial class Mrgada
 {
     private static string _ServerIp;
@@ -44,7 +46,7 @@ public static partial class Mrgada
 
     public static void Start()
     {
-        Console.WriteLine("Mrgada Started");
+        Log.Information("Mrgada Started");
     }
 }
 

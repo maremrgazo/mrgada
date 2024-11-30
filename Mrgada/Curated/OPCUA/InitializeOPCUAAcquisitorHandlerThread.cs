@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Opc.UaFx.Client;
 using Opc.Ua;
 using static Mrgada.Acquisitor;
+using Serilog;
 
 
 
@@ -116,7 +117,7 @@ public static partial class Mrgada
                         catch
                         {
                             IsConnected = false;
-                            Console.WriteLine($"{_AcquisitorName,-10}: Can't connect to OPCUA Server, trying again in 30 seconds");
+                            Log.Information($"{_AcquisitorName,-10}: Can't connect to OPCUA Server, trying again in 30 seconds");
                             Thread.Sleep(30000);
                         }
                     }

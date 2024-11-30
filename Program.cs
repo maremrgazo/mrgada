@@ -4,6 +4,10 @@
 using Opc.UaFx.Client;
 using Serilog;
 
+// dotnet run ne dela na linux
+// moraš buildat na windowsu
+// potem cd release in chmox +x, in poženeš ./mrgada
+// scp -r ./Release mare@192.168.64.122:/home/mare
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
